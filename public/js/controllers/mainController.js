@@ -34,8 +34,16 @@ app.controller('mainController', function($scope, beerFactory) {
     $scope.beers = [];
     
       $scope.addBeer = function() {
-          var newBeer = {};
-        beerFactory.addBeer(newBeer);
+    
+        beerFactory.addBeer(newBeer)
+        .then(function(beer) {
+          $scope.beers.push(beer);
+        })
+        .catch(function(error) {
+          console.log(error)
+        });
+
+
       }
 
       $scope.removeBeer = function() {

@@ -8,9 +8,12 @@ app.factory('beerFactory', function($http) {
             return angular.copy(response.data);
           });
       };
-    
-      beerFactory.addBeer = function(newBeer) {
-      };
+           
+    beerFactory.addBeer = function(newBeer) {
+      return $http.post('/beers', newBeer).then(function(response) {
+        return angular.copy(response.data);
+      });
+    }
     
       beerFactory.removeBeer = function(beerToRemove) {
       };
