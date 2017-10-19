@@ -13,53 +13,47 @@ app.use(express.static('node_modules'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+var handler = function(res, next){
+  return function(err, beer) {
+    if (err) {
+      return next(err);
+    }
+    res.send(beer);
+  }
+}
+
 
 // to handle getting all beers from the db and their comments
 app.get('/beers', function (req, res, next) {
-  Beer.find(function (error, beers) {
-    if (error) {
-      return next(error);
-    } else {
-      return res.send(beers);
-    }
-  });
+  Beer.find(handler(res,next));
 });
 
 
 
 // to handle adding a beer
 app.post('/beers', function(req, res, next) {
-  Beer.create(req.body, function(err, beer) {
-    if (err) {
-      return next(err);
-    } else {
-      return res.send(beer);
-    }
-  });
+  Beer.create(req.body, handler(res,next));
 });
 
 // to handle deleting a beer
-app.delete('/beers/:id', function(req, res) {
-  Beer.findByIdAndRemove(req.params.id, function(err, beer) {
-      if (err) { return console.log("Error delete"); }
-      res.send(beer);
-  });
+app.delete('/beers/:id', function(req, res, next) {
+  Beer.findByIdAndRemove(req.params.id, handler(res,next));
 });
 
 // to handle updating a beer
+
+app.put('/beers/:beerId', function(req, res, next) {
+  Beer.findByIdAndUpdate(req.params.beerId, req.body, { new: true }, handler(res,next));
+});
+
+// to handle adding a rating to a beer
 
 app.post('/beers/:id/ratings', function(req, res, next) {
   //code a suitable update object 
   //using req.body to retrieve the new rating
   var updateObject = {$inc : {numberOfRatings : 1, ratingTotal: req.body.rating}};
 
-  Beer.findByIdAndUpdate(req.param.id, updateObject, { new: true }, function(err, beer) {
-      if (err) {
-          return next(err);
-      } else {
-          res.send(beer);
-      }
-  });
+  Beer.findByIdAndUpdate(req.param.id, updateObject, { new: true }, handler(res,next));
 });
 
 
