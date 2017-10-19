@@ -1,0 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
+.beer-name {
+    margin-right: 10px;
+}
