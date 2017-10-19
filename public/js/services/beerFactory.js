@@ -15,7 +15,10 @@ app.factory('beerFactory', function($http) {
       });
     }
     
-      beerFactory.removeBeer = function(beerToRemove) {
+      beerFactory.removeBeer = function(id) {
+        return $http.delete('/beers/', + id).then(function(response) {
+          return angular.copy(response.data);
+        });
       };
     
       return beerFactory;
